@@ -11,4 +11,6 @@ Please make sure to update tests as appropriate.
 If you have any questions, please contact me at my [email](mailto:gavinjohncmnutt@gmail.com).
 ## Credits
 GitHub @[gavinrn](https://www.github.com/gavinrn)
+## Video Walkthrough
+https://drive.google.com/file/d/1efpmLXFHmxoBsrUPCK2zcBPoy3dtJRMY/view 
 
