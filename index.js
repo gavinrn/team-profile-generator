@@ -6,75 +6,83 @@ const Manager = require("./lib/Manager");
 const Intern = require("./lib/Intern");
 const Engineer = require("./lib/Engineer");
 
-const html = `
+var html = `
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>My Website</title>
+    <title>Team Profile Generator</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
 </head>
+
 <body>
-  <h1>Welcome to my website!</h1>
-  <p>Here you will find all sorts of interesting content.</p>
-</body>
-</html>
+    <header>
+        <h1>My Team</h1>
+    </header>
+    <main>
+        <div class="card-container">
+
 `;
 
 const questions = [
-    {
-        type: "list",
-        name: "options",
-        message: "What would you like to do?",
-        choices: ["Engineer", "Intern", "Finish building my team"],
+  {
+    type: "list",
+    name: "options",
+    message: "What would you like to do?",
+    choices: ["Engineer", "Intern", "Finish building my team"],
 
-    },
-    {
-        type: "input",
-        name: "engineerName",
-        message: "What is your engineer's name?",
-        when: (answers) => answers.options === "Engineer"
-    },
-    {
-        type: "input",
-        name: "engineerId",
-        message: "What is your engineer's id?",
-        when: (answers) => answers.options === "Engineer"
-    },
-    {
-        type: "input",
-        name: "engineerEmail",
-        message: "What is your engineer's email?",
-        when: (answers) => answers.options === "Engineer"
-    },
-    {
-        type: "input",
-        name: "engineerGithub",
-        message: "What is your engineer's github?",
-        when: (answers) => answers.options === "Engineer"
-    },
-    {
-        type: "input",
-        name: "internName",
-        message: "What is your intern's name?",
-        when: (answers) => answers.options === "Intern"
-    },
-    {
-        type: "input",
-        name: "internId",
-        message: "What is your intern's id?",
-        when: (answers) => answers.options === "Intern"
-    },
-    {
-        type: "input",
-        name: "internEmail",
-        message: "What is your intern's email?",
-        when: (answers) => answers.options === "Intern"
-    },
-    {
-        type: "input",
-        name: "internSchool",
-        message: "What is your intern's school?",
-        when: (answers) => answers.options === "Intern"
-    },
+  },
+  {
+    type: "input",
+    name: "engineerName",
+    message: "What is your engineer's name?",
+    when: (answers) => answers.options === "Engineer"
+  },
+  {
+    type: "input",
+    name: "engineerId",
+    message: "What is your engineer's id?",
+    when: (answers) => answers.options === "Engineer"
+  },
+  {
+    type: "input",
+    name: "engineerEmail",
+    message: "What is your engineer's email?",
+    when: (answers) => answers.options === "Engineer"
+  },
+  {
+    type: "input",
+    name: "engineerGithub",
+    message: "What is your engineer's github?",
+    when: (answers) => answers.options === "Engineer"
+  },
+  {
+    type: "input",
+    name: "internName",
+    message: "What is your intern's name?",
+    when: (answers) => answers.options === "Intern"
+  },
+  {
+    type: "input",
+    name: "internId",
+    message: "What is your intern's id?",
+    when: (answers) => answers.options === "Intern"
+  },
+  {
+    type: "input",
+    name: "internEmail",
+    message: "What is your intern's email?",
+    when: (answers) => answers.options === "Intern"
+  },
+  {
+    type: "input",
+    name: "internSchool",
+    message: "What is your intern's school?",
+    when: (answers) => answers.options === "Intern"
+  },
 
 
 
@@ -86,30 +94,47 @@ inquirer.prompt([
     name: "Manager",
     message: "Please enter the team mangaer's name",
 
-},
-{
+  },
+  {
     type: "input",
     name: "id",
     message: "What is your id?",
 
-},
-{
+  },
+  {
     type: "input",
     name: "email",
     message: "What is your email?",
 
-},
-{
-  type: "input",
-  name: "officeNumber",
-  message: "What is your office number?",
+  },
+  {
+    type: "input",
+    name: "officeNumber",
+    message: "What is your office number?",
 
-}
+  }
 ]).then((answers) => {
-  var e = new Manager(answers.Manager, answers.id, answers.email, answers.officeNumber);
-  
-  promptQuestions();
+  const e = new Manager(answers.Manager, answers.id, answers.email, answers.officeNumber);
+  console.log(e.getOfficeNumber());
+  var appendManager = `
+  <div class="card">
+    <div class="card-header">
+      <h2>${e.getRole()}</h2>
+      <h3>${e.getName()}</h3>
+    </div>
+    <div class="card-body">
+      <p>ID: ${e.getId()}</p>
+      <p>Email: <a href="mailto:${e.getEmail()}">Click Here</a></p>
+      <p>Office Number: ${e.getOfficeNumber()}</p>
+    </div>
+  </div>
+  `;
+  html = html + appendManager;
+  if (e.getOfficeNumber !== undefined) {
+    promptQuestions();
+  }
 });
+
 
 async function promptQuestions() {
   let shouldExit = false;
@@ -118,6 +143,15 @@ async function promptQuestions() {
     const answers = await inquirer.prompt(questions);
 
     if (answers.options === "Finish building my team") {
+      const filePath = path.join(__dirname, 'dist', 'index.html');
+
+      fs.writeFile(filePath, html, function (err) {
+        if (err) {
+          return console.log(err);
+        }
+
+      });
+
       console.log('You chose to exit.');
       shouldExit = true;
       console.log('Exiting...');
@@ -125,21 +159,57 @@ async function promptQuestions() {
 
 
 
-     else {
+    else {
       console.log(`You chose ${answers.options}`);
 
-    }
+      if (answers.options === "Engineer") {
+        const e = new Engineer(answers.engineerName, answers.engineerId, answers.engineerEmail, answers.engineerGithub);
+        console.log(e.getGithub());
+        var appendEngineer = `
+        <div class="card">
+          <div class="card-header">
+            <h2>${e.getRole()}</h2>
+            <h3>${e.getName()}</h3>
+          </div>
+          <div class="card-body">
+            <p>ID: ${e.getId()}</p>
+            <p>Email: <a href="mailto:${e.getEmail()}">Click Here</a></p>
+            <p>Github: <a href="https://www.github.com/${e.getGithub()}">Click Here</a></p>
+          </div>
+        </div>
+        `;
+        html = html + appendEngineer;
+      }
+
+      if (answers.options === "Intern") {
+        const i = new Intern(answers.internName, answers.internId, answers.internEmail, answers.internSchool);
+        console.log(i.getSchool());
+        var appendIntern = `
+        <div class="card">
+          <div class="card-header">
+            <h2>${i.getRole()}</h2>
+            <h3>${i.getName()}</h3>
+          </div>
+          <div class="card-body">
+            <p>ID: ${i.getId()}</p>
+            <p>Email: <a href="mailto:${i.getEmail()}">Click Here</a></p>
+            <p>School: ${i.getSchool()}</p>
+          </div>
+        </div>
+        `;
+        html = html + appendIntern;
+      }
 
   }
 }
 
 const filePath = path.join(__dirname, 'dist', 'index.html');
 
-fs.writeFile(filePath, html, function(err) {
+fs.writeFile(filePath, html, function (err) {
   if (err) {
     return console.log(err);
   }
-  console.log("Success!");
+
 });
 
 
@@ -191,4 +261,4 @@ fs.writeFile(filePath, html, function(err) {
 // const e = new Engineer("Foo", 1, "test@test.com", testValue);
 
 // console.log(e.getGithub())
-
+}
