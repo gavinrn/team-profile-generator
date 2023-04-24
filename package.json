@@ -4,10 +4,10 @@
   "description": "This is a way for a user to add other team members to a team profile through the command line.",
   "main": "code.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
-    "type": "git",
+    "type": "module",
     "url": "git+https://github.com/gavinrn/team-profile-generator.git"
   },
   "keywords": [],
@@ -19,6 +19,6 @@
   "homepage": "https://github.com/gavinrn/team-profile-generator#readme",
   "dependencies": {
     "inquirer": "^8.2.4",
-    "jest": "^29.3.1"
+    "jest": "^29.5.0"
   }
 }
